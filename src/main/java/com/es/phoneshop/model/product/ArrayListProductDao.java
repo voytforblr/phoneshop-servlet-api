@@ -14,7 +14,7 @@ public class ArrayListProductDao implements ProductDao {
     private long maxId;
     private ReadWriteLock lock = new ReentrantReadWriteLock();
 
-    public ArrayListProductDao() {
+    public ArrayListProductDao() throws ProductNoFindException {
         this.productList = new ArrayList<>();
         saveSampleProducts();
     }
@@ -48,14 +48,14 @@ public class ArrayListProductDao implements ProductDao {
     }
 
     @Override
-    public void save(Product product) {
+    public void save(Product product) throws ProductNoFindException {
         lock.writeLock().lock();
         try {
             if (product.getId() != null) {
                 long id = product.getId();
                 Product findProduct = productList.stream().filter(product1 ->
                         product1.getId().equals(id))
-                        .findAny().orElse(null);
+                        .findAny().orElseThrow(ProductNoFindException::new);
                 productList.set(productList.indexOf(findProduct), product);
 
             } else {
@@ -81,7 +81,7 @@ public class ArrayListProductDao implements ProductDao {
         }
     }
 
-    private void saveSampleProducts() {
+    private void saveSampleProducts() throws ProductNoFindException {
         Currency usd = Currency.getInstance("USD");
         save(new Product("sgs", "Samsung Galaxy S", new BigDecimal(100), usd, 100, "https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer/Samsung/Samsung%20Galaxy%20S.jpg"));
         save(new Product("sgs2", "Samsung Galaxy S II", new BigDecimal(200), usd, 0, "https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer/Samsung/Samsung%20Galaxy%20S%20II.jpg"));
