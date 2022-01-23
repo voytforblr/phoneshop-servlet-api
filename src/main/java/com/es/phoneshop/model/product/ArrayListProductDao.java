@@ -14,19 +14,18 @@ public class ArrayListProductDao implements ProductDao {
     private long maxId;
     private ReadWriteLock lock = new ReentrantReadWriteLock();
 
-    public ArrayListProductDao() throws ProductNoFindException {
+    public ArrayListProductDao() throws ProductNotFoundException {
         this.productList = new ArrayList<>();
         saveSampleProducts();
     }
 
     @Override
-    public Product getProduct(Long id) throws ProductNoFindException {
+    public Product getProduct(Long id) throws ProductNotFoundException {
         lock.readLock().lock();
         try {
-            return productList.stream().filter(product ->
-                    product.getId().equals(id))
+            return productList.stream().filter(product -> product.getId().equals(id))
                     .findAny()
-                    .orElseThrow(ProductNoFindException::new);
+                    .orElseThrow(ProductNotFoundException::new);
         } finally {
             lock.readLock().unlock();
         }
@@ -48,14 +47,15 @@ public class ArrayListProductDao implements ProductDao {
     }
 
     @Override
-    public void save(Product product) throws ProductNoFindException {
+    public void save(Product product) throws ProductNotFoundException {
         lock.writeLock().lock();
         try {
             if (product.getId() != null) {
                 long id = product.getId();
                 Product findProduct = productList.stream().filter(product1 ->
                         product1.getId().equals(id))
-                        .findAny().orElseThrow(ProductNoFindException::new);
+                        .findAny()
+                        .orElseThrow(ProductNotFoundException::new);
                 productList.set(productList.indexOf(findProduct), product);
 
             } else {
@@ -69,19 +69,19 @@ public class ArrayListProductDao implements ProductDao {
     }
 
     @Override
-    public void delete(Long id) throws ProductNoFindException {
+    public void delete(Long id) throws ProductNotFoundException {
         lock.writeLock().lock();
         try {
             Product findProduct = productList.stream().filter(product1 ->
                     product1.getId().equals(id))
-                    .findAny().orElseThrow(ProductNoFindException::new);
+                    .findAny().orElseThrow(ProductNotFoundException::new);
             productList.remove(findProduct);
         } finally {
             lock.writeLock().unlock();
         }
     }
 
-    private void saveSampleProducts() throws ProductNoFindException {
+    private void saveSampleProducts() throws ProductNotFoundException {
         Currency usd = Currency.getInstance("USD");
         save(new Product("sgs", "Samsung Galaxy S", new BigDecimal(100), usd, 100, "https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer/Samsung/Samsung%20Galaxy%20S.jpg"));
         save(new Product("sgs2", "Samsung Galaxy S II", new BigDecimal(200), usd, 0, "https://raw.githubusercontent.com/andrewosipenko/phoneshop-ext-images/master/manufacturer/Samsung/Samsung%20Galaxy%20S%20II.jpg"));
