@@ -105,7 +105,8 @@
                                     <div class="box2">Date
                                         <p></p>
                                         <c:forEach var="history" items="${product.priceHistories}">
-                                            <fmt:formatDate value="${history.date}" pattern="yyyy-MM-dd"/>
+                                           <%-- <fmt:formatDate value="${history.date}" pattern="yyyy-MM-dd"/>--%>
+                                            ${history.date}
                                         </c:forEach>
                                     </div>
                                 </div>

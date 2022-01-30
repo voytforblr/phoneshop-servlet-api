@@ -2,14 +2,14 @@ package com.es.phoneshop.model.product;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.util.Date;
+import java.time.LocalDate;
 
 public class PriceHistory implements Serializable {
 
     private BigDecimal price;
-    private Date date;
+    private LocalDate date;
 
-    public PriceHistory(BigDecimal price, Date date) {
+    public PriceHistory(BigDecimal price, LocalDate date) {
         this.price = price;
         this.date = date;
     }
@@ -18,7 +18,7 @@ public class PriceHistory implements Serializable {
         return price;
     }
 
-    public Date getDate() {
+    public LocalDate getDate() {
         return date;
     }
 
@@ -26,7 +26,7 @@ public class PriceHistory implements Serializable {
         this.price = price;
     }
 
-    public void setDate(Date date) {
+    public void setDate(LocalDate date) {
         this.date = date;
     }
 }

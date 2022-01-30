@@ -1,6 +1,11 @@
 package com.es.phoneshop.model.product;
 
-import java.util.*;
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Comparator;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.stream.Collectors;
@@ -40,7 +45,7 @@ public class ArrayListProductDao implements ProductDao {
         lock.readLock().lock();
         try {
             Comparator<Product> comparatorField = Comparator.comparing(product -> {
-                if (SortField.description == sortField) {
+                if (SortField.DESCRIPTION == sortField) {
                     return (Comparable) product.getDescription();
                 } else {
                     return (Comparable) product.getPrice();
@@ -52,14 +57,14 @@ public class ArrayListProductDao implements ProductDao {
                         .filter(product -> product.getStock() > 0)
                         .filter(product -> Arrays.stream(query.split("\\s"))
                                 .anyMatch(word -> product.getDescription().toLowerCase().contains(word.toLowerCase())))
-                        .sorted((SortOrder.asc == sortOrder) ? comparatorField : comparatorField.reversed())
+                        .sorted((SortOrder.ASC == sortOrder) ? comparatorField : comparatorField.reversed())
                         .collect(Collectors.toList());
             }
             if (query == null || query.isEmpty()) {
                 return productList.stream()
                         .filter(product -> product.getPrice() != null)
                         .filter(product -> product.getStock() > 0)
-                        .sorted((SortOrder.asc == sortOrder) ? comparatorField : comparatorField.reversed())
+                        .sorted((SortOrder.ASC == sortOrder) ? comparatorField : comparatorField.reversed())
                         .collect(Collectors.toList());
             } else {// if (query!=null && sortOrder==null)
                 return productList.stream()
@@ -71,13 +76,13 @@ public class ArrayListProductDao implements ProductDao {
                                 //"Samsung S", то anyMatch вернет так же и вхождения "S", в
                                 //отличие от примера allMatch, вернет только полное вхождение фразы
                                 //"Samsung S", но я если бы не пример я бы оставил allMatch
-                                .anyMatch(word -> product.getDescription().toLowerCase().contains(word.toLowerCase())))
+                                .anyMatch(word -> isWordInDescription(product, word)))
                         .sorted((product1, product2) ->
                                 (int) (Arrays.stream(query.split("\\s"))
-                                        .filter(word -> product2.getDescription().toLowerCase().contains(word.toLowerCase()))
+                                        .filter(word -> isWordInDescription(product2, word))
                                         .count()
                                         - Arrays.stream(query.split("\\s"))
-                                        .filter(word -> product1.getDescription().toLowerCase().contains(word.toLowerCase()))
+                                        .filter(word -> isWordInDescription(product1, word))
                                         .count()))
                         .collect(Collectors.toList());
             }
@@ -90,6 +95,9 @@ public class ArrayListProductDao implements ProductDao {
     public void save(Product product) throws ProductNotFoundException {
         lock.writeLock().lock();
         try {
+            if (product.getPriceHistories() == null) {
+                product.setPriceHistories(getNewHistoryElement(product));
+            }
             if (product.getId() != null) {
                 long id = product.getId();
                 Product findProduct = productList.stream().filter(product1 ->
@@ -118,5 +126,17 @@ public class ArrayListProductDao implements ProductDao {
         } finally {
             lock.writeLock().unlock();
         }
+    }
+
+    private ArrayList<PriceHistory> getNewHistoryElement(Product product) {
+        BigDecimal price = product.getPrice();
+        LocalDate date = LocalDate.now();
+        ArrayList<PriceHistory> list = new ArrayList<>();
+        list.add(new PriceHistory(price, date));
+        return list;
+    }
+
+    private boolean isWordInDescription(Product product, String word) {
+        return product.getDescription().toLowerCase().contains(word.toLowerCase());
     }
 }
