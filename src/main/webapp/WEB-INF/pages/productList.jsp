@@ -2,49 +2,10 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib prefix="tags" tagdir="/WEB-INF/tags" %>
-
+<link rel="stylesheet" type="text/css" href="../../styles/priceHistories.css">
 <jsp:useBean id="products" type="java.util.ArrayList" scope="request"/>
 <tags:master pageTitle="Product List">
-    <style>
-        .dropdown-content {
-            display: none;
-            position: absolute;
-            text-align: left;
-            padding: 15px;
-            background-color: #f1f1f1;
-            min-width: 100px;
-            z-index: 1;
-            left: 150%;
-            top: -50%;
 
-        }
-
-        .dropdown {
-            position: relative;
-            display: inline-block;
-        }
-
-        .dropdown:hover .dropdown-content {
-            display: block;
-        }
-
-        .container {
-            display: flex;
-            flex-direction: row;
-        }
-
-        .box1 {
-            width: 100px;
-            text-align: left;
-            margin: 5px;
-        }
-
-        .box2 {
-            width: 100px;
-            text-align: left;
-            margin: 5px;
-        }
-    </style>
     <p>
         Welcome to Expert-Soft training!
     </p>
