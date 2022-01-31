@@ -2,7 +2,7 @@ package com.es.phoneshop.model.product;
 
 import java.math.BigDecimal;
 import java.util.Currency;
-import java.util.ArrayList;
+import java.util.List;
 
 public class Product {
     private Long id;
@@ -18,13 +18,13 @@ public class Product {
     private Currency currency;
     private int stock;
     private String imageUrl;
-    private ArrayList<PriceHistory> priceHistories;
+    private List<PriceHistory> priceHistories;
 
     public Product() {
     }
 
     public Product(String code, String description, BigDecimal price, Currency currency, int stock,
-                   String imageUrl, ArrayList<PriceHistory> priceHistories) {
+                   String imageUrl, List<PriceHistory> priceHistories) {
         this(null, code, description, price, currency, stock, imageUrl, priceHistories);
     }
 
@@ -34,11 +34,11 @@ public class Product {
 
     public Product(Long id, String code, String description, BigDecimal price, Currency currency, int stock,
                    String imageUrl) {
-        this(null, code, description, price, currency, stock, imageUrl, null);
+        this(id, code, description, price, currency, stock, imageUrl, null);
     }
 
     public Product(Long id, String code, String description, BigDecimal price, Currency currency, int stock,
-                   String imageUrl, ArrayList<PriceHistory> priceHistories) {
+                   String imageUrl, List<PriceHistory> priceHistories) {
         this.id = id;
         this.code = code;
         this.description = description;
@@ -106,11 +106,11 @@ public class Product {
         this.imageUrl = imageUrl;
     }
 
-    public ArrayList<PriceHistory> getPriceHistories() {
+    public List<PriceHistory> getPriceHistories() {
         return priceHistories;
     }
 
-    public void setPriceHistories(ArrayList<PriceHistory> priceHistories) {
-        this.priceHistories = (ArrayList<PriceHistory>) priceHistories;
+    public void setPriceHistories(List<PriceHistory> priceHistories) {
+        this.priceHistories = priceHistories;
     }
 }

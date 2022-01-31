@@ -95,9 +95,6 @@ public class ArrayListProductDao implements ProductDao {
     public void save(Product product) throws ProductNotFoundException {
         lock.writeLock().lock();
         try {
-            if (product.getPriceHistories() == null) {
-                product.setPriceHistories(getNewHistoryElement(product));
-            }
             if (product.getId() != null) {
                 long id = product.getId();
                 Product findProduct = productList.stream().filter(product1 ->
