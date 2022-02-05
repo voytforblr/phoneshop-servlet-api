@@ -7,7 +7,12 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Currency;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+
 
 public class ArrayListProductDaoTest {
     private ProductDao productDao;
@@ -22,18 +27,18 @@ public class ArrayListProductDaoTest {
     public void testGetProductWithUnrealId() {
         long id = 1000L;
 
-        Product product=productDao.getProduct(id);
+        Product product = productDao.getProduct(id);
     }
 
     @Test
-    public void testGetProduct(){
-        Product product=new Product("test-product", "Samsung Galaxy S", new BigDecimal(100), USD, 100, "image");
+    public void testGetProduct() {
+        Product product = new Product("test-product", "Samsung Galaxy S", new BigDecimal(100), USD, 100, "image");
         Product result;
-        
-        productDao.save(product);
-        result=productDao.getProduct(0L);
 
-        assertEquals(product,result);
+        productDao.save(product);
+        result = productDao.getProduct(0L);
+
+        assertEquals(product, result);
     }
 
     @Test
@@ -42,12 +47,12 @@ public class ArrayListProductDaoTest {
         Product testCorrectProduct2 = new Product("price not null and stock>0", "test2", new BigDecimal(100), USD, 100, "image");
         Product testUnCorrectProduct3 = new Product("price not null and stock<=0", "test3", new BigDecimal(100), USD, 0, "image");
         Product testUnCorrectProduct4 = new Product("price null and stock<=0", "test4", null, USD, -1, "image");
-        
+
         productDao.save(testCorrectProduct1);
         productDao.save(testCorrectProduct2);
         productDao.save(testUnCorrectProduct3);
         productDao.save(testUnCorrectProduct4);
-        ArrayList<Product> list= (ArrayList<Product>) productDao.findProducts(null,null,null);
+        ArrayList<Product> list = (ArrayList<Product>) productDao.findProducts(null, null, null);
 
         assertTrue(list.contains(testCorrectProduct1));
         assertTrue(list.contains(testCorrectProduct2));
@@ -56,7 +61,7 @@ public class ArrayListProductDaoTest {
     }
 
     @Test
-    public void testFindProductsQueryAndSortOrder(){
+    public void testFindProductsQueryAndSortOrder() {
         productDao.save(new Product("sgs", "Samsung Galaxy S", new BigDecimal(100), USD, 100, "image"));
         productDao.save(new Product("sgs3", "Samsung Galaxy S III", new BigDecimal(300), USD, 5, "image"));
         productDao.save(new Product("iphone", "Apple iPhone", new BigDecimal(200), USD, 10, "image"));
@@ -69,21 +74,21 @@ public class ArrayListProductDaoTest {
         productDao.save(new Product("simc56", "Siemens C56", new BigDecimal(200), USD, 10, "image"));
         productDao.save(new Product("simc61", "Siemens C61", new BigDecimal(200), USD, 10, "image"));
         productDao.save(new Product("simsxg75", "Siemens SXG75", new BigDecimal(200), USD, 10, "image"));
-        
-        assertTrue(productDao.findProducts(null, null, null).get(0).getStock()>0);
+
+        assertTrue(productDao.findProducts(null, null, null).get(0).getStock() > 0);
         assertNotNull(productDao.findProducts(null, null, null).get(0).getPrice());
 
-        assertTrue(productDao.findProducts("Sam", null, null).get(0).getStock()>0);
+        assertTrue(productDao.findProducts("Sam", null, null).get(0).getStock() > 0);
         assertNotNull(productDao.findProducts("Sam", null, null).get(0).getPrice());
 
-        assertTrue(productDao.findProducts("Sam", null, SortOrder.ASC).get(0).getStock()>0);
+        assertTrue(productDao.findProducts("Sam", null, SortOrder.ASC).get(0).getStock() > 0);
         assertNotNull(productDao.findProducts("Sam", null, SortOrder.ASC).get(0).getPrice());
     }
 
     @Test
     public void testSaveNewProduct() throws ProductNotFoundException {
         Product product = (new Product("test-product", "Samsung Galaxy S", new BigDecimal(100), USD, 100, "image"));
-        
+
         productDao.save(product);
         Product result = productDao.getProduct(product.getId());
 
@@ -95,7 +100,7 @@ public class ArrayListProductDaoTest {
     @Test(expected = ProductNotFoundException.class)
     public void testDeleteProduct() throws ProductNotFoundException {
         Product product = (new Product("test-product", "phone", new BigDecimal(100), USD, 100, "image"));
-        
+
         productDao.save(product);
         productDao.delete(product.getId());
         productDao.getProduct(product.getId());
@@ -104,12 +109,12 @@ public class ArrayListProductDaoTest {
     @Test
     public void testSaveUpdateProduct() throws ProductNotFoundException {
         Product productWithoutId = (new Product("test-OldProduct", "Samsung Galaxy S", new BigDecimal(100), USD, 100, "image"));
-        Product productWithId=new Product(0L, "test-NewProduct", "Samsung Galaxy S", new BigDecimal(100), USD, 100, "image");
-        
+        Product productWithId = new Product(0L, "test-NewProduct", "Samsung Galaxy S", new BigDecimal(100), USD, 100, "image");
+
         productDao.save(productWithoutId);
         productDao.save(productWithId);
         Product testProduct = productDao.getProduct(0L);
-        
+
         assertNotEquals(productWithoutId.getCode(), testProduct.getCode());
     }
 }
