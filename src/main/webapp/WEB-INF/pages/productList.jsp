@@ -2,7 +2,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib prefix="tags" tagdir="/WEB-INF/tags" %>
-<link rel="stylesheet" type="text/css" href="../../styles/priceHistories.css">
+<link rel="stylesheet" type="text/css" href="${pageContext.servletContext.contextPath}/styles/priceHistories.css">
 <jsp:useBean id="products" type="java.util.ArrayList" scope="request"/>
 <tags:master pageTitle="Product List">
 
@@ -80,5 +80,6 @@
             </tr>
         </c:forEach>
     </table>
+    <jsp:include page="history.jsp"/>
 </tags:master>
 

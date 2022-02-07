@@ -56,7 +56,7 @@ public class ArrayListProductDao implements ProductDao {
                         .filter(product -> product.getPrice() != null)
                         .filter(product -> product.getStock() > 0)
                         .filter(product -> Arrays.stream(query.split("\\s"))
-                                .anyMatch(word -> product.getDescription().toLowerCase().contains(word.toLowerCase())))
+                                .anyMatch(word -> isWordInDescription(product, word)))
                         .sorted((SortOrder.ASC == sortOrder) ? comparatorField : comparatorField.reversed())
                         .collect(Collectors.toList());
             }
@@ -123,14 +123,6 @@ public class ArrayListProductDao implements ProductDao {
         } finally {
             lock.writeLock().unlock();
         }
-    }
-
-    private ArrayList<PriceHistory> getNewHistoryElement(Product product) {
-        BigDecimal price = product.getPrice();
-        LocalDate date = LocalDate.now();
-        ArrayList<PriceHistory> list = new ArrayList<>();
-        list.add(new PriceHistory(price, date));
-        return list;
     }
 
     private boolean isWordInDescription(Product product, String word) {

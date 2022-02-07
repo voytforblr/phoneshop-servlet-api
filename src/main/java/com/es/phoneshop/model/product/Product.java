@@ -113,4 +113,13 @@ public class Product {
     public void setPriceHistories(List<PriceHistory> priceHistories) {
         this.priceHistories = priceHistories;
     }
+
+    @Override
+    public String toString() {
+        return "Product{" +
+                "id=" + id +
+                ", code='" + code + '\'' +
+                ", description='" + description + '\'' +
+                '}';
+    }
 }
