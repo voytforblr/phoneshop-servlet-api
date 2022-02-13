@@ -80,7 +80,8 @@ public class DefaultCartService implements CartService {
                 .map(CartItem::getQuantity).mapToInt(q -> q)
                 .sum());
         cart.setTotalCost(BigDecimal.valueOf(cart.getItems().stream()
-                .mapToDouble(cartItem -> cartItem.getProduct().getPrice().doubleValue() * cartItem.getQuantity())
+                .mapToDouble(cartItem ->
+                        cartItem.getProduct().getPrice().multiply(new BigDecimal(cartItem.getQuantity())).doubleValue())
                 .sum()));
     }
 }

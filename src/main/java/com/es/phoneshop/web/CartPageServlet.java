@@ -39,23 +39,22 @@ public class CartPageServlet extends HttpServlet {
         Map<Long, String> errors = new HashMap<>();
         for (int i = 0; i < productIds.length; i++) {
             Long productId = Long.valueOf(productIds[i]);
-            int quantity = 1;
-            try {
-                request.getLocale();
-                NumberFormat format = NumberFormat.getInstance(request.getLocale());
-                quantity = format.parse(quantities[i]).intValue();
-            } catch (ParseException e) {
-                errors.put(productId, "Not a number");
-            }
-            if (quantity <= 0) {
-                errors.put(productId, "Can't be negative or zero");
-            }
+            int quantity = 0;
             Cart cart = cartService.getCart(request);
             try {
-                cartService.update(cart, productId, quantity);
+                NumberFormat format = NumberFormat.getInstance(request.getLocale());
+                quantity = format.parse(quantities[i]).intValue();
+                if (quantity <= 0) {
+                    errors.put(productId, "Can't be negative or zero");
+                } else {
+                    cartService.update(cart, productId, quantity);
+                }
+            } catch (ParseException e) {
+                errors.put(productId, "Not a number");
             } catch (OutOfStockException e) {
                 errors.put(productId, "Out of stock, available " + e.getStockAvailable());
             }
+
         }
         if (errors.isEmpty()) {
             response.sendRedirect(request.getContextPath() + "/cart?message=Cart updated successfully");

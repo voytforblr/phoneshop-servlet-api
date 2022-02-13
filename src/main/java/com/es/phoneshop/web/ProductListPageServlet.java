@@ -55,21 +55,20 @@ public class ProductListPageServlet extends HttpServlet {
         String productIdString = request.getParameter("id");
         int index = findIndexInStringArray(productIds, productIdString);
         Long productId = Long.valueOf(productIdString);
-        int quantity = 1;
+        int quantity = 0;
+        Cart cart = cartService.getCart(request);
         Map<Long, String> errors = new HashMap<>();
         try {
             request.getLocale();
             NumberFormat format = NumberFormat.getInstance(request.getLocale());
             quantity = format.parse(quantities[index]).intValue();
+            if (quantity <= 0) {
+                errors.put(productId, "Can't be negative or zero");
+            } else {
+                cartService.add(cart, productId, quantity);
+            }
         } catch (ParseException e) {
             errors.put(productId, "Not a number");
-        }
-        if (quantity <= 0) {
-            errors.put(productId, "Can't be negative or zero");
-        }
-        Cart cart = cartService.getCart(request);
-        try {
-            cartService.add(cart, productId, quantity);
         } catch (OutOfStockException e) {
             errors.put(productId, "Out of stock, available " + e.getStockAvailable());
         }
