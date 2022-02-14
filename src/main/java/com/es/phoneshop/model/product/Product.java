@@ -24,6 +24,10 @@ public class Product implements Serializable {
     public Product() {
     }
 
+    public Product(BigDecimal price) {
+        this(null, null, null, price, null, 0, null, null);
+    }
+
     public Product(String code, String description, BigDecimal price, Currency currency, int stock,
                    String imageUrl, List<PriceHistory> priceHistories) {
         this(null, code, description, price, currency, stock, imageUrl, priceHistories);
