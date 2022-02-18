@@ -1,10 +1,11 @@
 package com.es.phoneshop.model.product;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Currency;
 import java.util.List;
 
-public class Product {
+public class Product implements Serializable {
     private Long id;
     private String code;
     private String description;
@@ -21,6 +22,10 @@ public class Product {
     private List<PriceHistory> priceHistories;
 
     public Product() {
+    }
+
+    public Product(BigDecimal price) {
+        this(null, null, null, price, null, 0, null, null);
     }
 
     public Product(String code, String description, BigDecimal price, Currency currency, int stock,
