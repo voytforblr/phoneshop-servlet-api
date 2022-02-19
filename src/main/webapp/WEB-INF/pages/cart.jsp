@@ -89,7 +89,11 @@
         </table>
         <p>
             <button>Update</button>
+
         </p>
+    </form>
+    <form>
+        <button formaction="${pageContext.servletContext.contextPath}/checkout" formmethod="get">Checkout</button>
     </form>
     <form id="deleteCartItem" method="post"></form>
 </tags:master>

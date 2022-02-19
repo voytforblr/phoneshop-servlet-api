@@ -3,7 +3,6 @@
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib prefix="tags" tagdir="/WEB-INF/tags" %>
 <link rel="stylesheet" type="text/css" href="${pageContext.servletContext.contextPath}/styles/main.css">
-<%--<jsp:useBean id="history" type="java.util.LinkedList" scope="request"/>--%>
 <table>
     <c:if test="${not empty history}">
         <div>

@@ -5,7 +5,7 @@ import java.math.BigDecimal;
 import java.util.Currency;
 import java.util.List;
 
-public class Product implements Serializable {
+public class Product extends Entity implements Serializable {
     private Long id;
     private String code;
     private String description;
