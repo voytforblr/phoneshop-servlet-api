@@ -2,6 +2,8 @@ package com.es.phoneshop.model.product.order;
 
 import com.es.phoneshop.model.product.cart.Cart;
 import com.es.phoneshop.model.product.cart.CartItem;
+import com.es.phoneshop.model.product.cart.CartService;
+import com.es.phoneshop.model.product.cart.DefaultCartService;
 import com.es.phoneshop.model.product.dao.ArrayListOrderDao;
 import com.es.phoneshop.model.product.dao.OrderDao;
 
@@ -13,9 +15,11 @@ import java.util.stream.Collectors;
 
 public class DefaultOrderService implements OrderService {
     OrderDao orderDao;
+    CartService cartService;
 
     private DefaultOrderService() {
         orderDao = ArrayListOrderDao.getInstance();
+        cartService = DefaultCartService.getInstance();
     }
 
     private static class SingletonHolder {
@@ -49,9 +53,11 @@ public class DefaultOrderService implements OrderService {
     }
 
     @Override
-    public void placeOrder(Order order) {
+    public void placeOrder(Order order, Cart cart) {
         order.setSecureId(UUID.randomUUID().toString());
         orderDao.save(order);
+        cartService.updateProductsQuantities(cart);
+        cartService.clearCart(cart);
     }
 
     private BigDecimal calculateDeliveryCost() {

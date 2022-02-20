@@ -7,12 +7,10 @@ import com.es.phoneshop.model.product.SortOrder;
 
 import java.util.List;
 
-public interface ProductDao {
+public interface ProductDao extends EntityDao<Product> {
     Product getProduct(Long id) throws ProductNotFoundException;
 
     List<Product> findProducts(String query, SortField sortField, SortOrder sortOrder);
-
-    void save(Product product) throws ProductNotFoundException;
 
     void delete(Long id) throws ProductNotFoundException;
 }

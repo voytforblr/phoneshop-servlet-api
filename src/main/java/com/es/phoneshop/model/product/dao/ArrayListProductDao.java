@@ -12,10 +12,9 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class ArrayListProductDao extends AbstractDao implements ProductDao {
+public class ArrayListProductDao extends AbstractDao<Product> implements ProductDao {
     private ArrayListProductDao() {
-        productList = new ArrayList<>();
-        itemList.addAll(productList);
+        itemList = new ArrayList<Product>();
     }
 
     private static class SingletonHolder {
@@ -26,29 +25,12 @@ public class ArrayListProductDao extends AbstractDao implements ProductDao {
         return SingletonHolder.HOLDER_INSTANCE;
     }
 
-    private List<Product> productList;
-
     @Override
     public Product getProduct(Long id) throws ProductNotFoundException {
         try {
-            return (Product) super.getItem(id);
+            return super.getItem(id);
         } catch (NotFoundException e) {
             throw new ProductNotFoundException(e.getId());
-        }
-    }
-
-    @Override
-    public void save(Product product) throws ProductNotFoundException {
-        int indexToInsert = super.save(product);
-        lock.writeLock().lock();
-        try {
-            if (indexToInsert < productList.size()) {
-                productList.set(indexToInsert, product);
-            } else {
-                productList.add(product);
-            }
-        } finally {
-            lock.writeLock().unlock();
         }
     }
 
@@ -64,13 +46,13 @@ public class ArrayListProductDao extends AbstractDao implements ProductDao {
                 }
             });
             if (query == null && sortField == null && sortOrder == null) {
-                return productList.stream()
+                return itemList.stream()
                         .filter(product -> product.getPrice() != null)
                         .filter(product -> product.getStock() > 0)
                         .collect(Collectors.toList());
             }
             if (query != null && sortOrder != null) {
-                return productList.stream()
+                return itemList.stream()
                         .filter(product -> product.getPrice() != null)
                         .filter(product -> product.getStock() > 0)
                         .filter(product -> Arrays.stream(query.split("\\s"))
@@ -79,13 +61,13 @@ public class ArrayListProductDao extends AbstractDao implements ProductDao {
                         .collect(Collectors.toList());
             }
             if (query == null || query.isEmpty()) {
-                return productList.stream()
+                return itemList.stream()
                         .filter(product -> product.getPrice() != null)
                         .filter(product -> product.getStock() > 0)
                         .sorted((SortOrder.ASC == sortOrder) ? comparatorField : comparatorField.reversed())
                         .collect(Collectors.toList());
             } else {// if (query!=null && sortOrder==null)
-                return productList.stream()
+                return itemList.stream()
                         .filter(product -> product.getPrice() != null)
                         .filter(product -> product.getStock() > 0)
                         .filter(product -> Arrays.stream(query.split("\\s"))
@@ -108,11 +90,11 @@ public class ArrayListProductDao extends AbstractDao implements ProductDao {
     public void delete(Long id) throws ProductNotFoundException {
         lock.writeLock().lock();
         try {
-            Product findProduct = productList.stream().filter(product1 ->
+            Product findProduct = itemList.stream().filter(product1 ->
                     product1.getId().equals(id))
                     .findAny()
                     .orElseThrow(() -> new ProductNotFoundException(id));
-            productList.remove(findProduct);
+            itemList.remove(findProduct);
             itemList.remove(findProduct);
         } finally {
             lock.writeLock().unlock();

@@ -69,12 +69,16 @@ public class DefaultCartService implements CartService {
     }
 
     @Override
-    public void clear(Cart cart) {
+    public void clearCart(Cart cart) {
         cart.setTotalCost(BigDecimal.ZERO);
         cart.setTotalQuantity(0);
+        cart.getItems().clear();
+    }
+
+    @Override
+    public void updateProductsQuantities(Cart cart) {
         cart.getItems().forEach(cartItem ->
                 cartItem.getProduct().setStock(cartItem.getProduct().getStock() - cartItem.getQuantity()));
-        cart.getItems().clear();
     }
 
     private CartItem findCartItem(Cart cart, Product product) {

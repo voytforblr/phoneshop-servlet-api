@@ -5,6 +5,9 @@
 <link rel="stylesheet" type="text/css" href="${pageContext.servletContext.contextPath}/styles/priceHistories.css">
 <jsp:useBean id="order" type="com.es.phoneshop.model.product.order.Order" scope="request"/>
 <tags:master pageTitle="Checkout">
+    <p>
+        
+    </p>
     <c:if test="${not empty param.message}">
         <div class="success">
                 ${param.message}
@@ -12,7 +15,7 @@
     </c:if>
     <c:if test="${not empty errors}">
         <div class="error">
-            There was an while placing order
+            There was an error while placing order
         </div>
     </c:if>
     <form method="post" action="${pageContext.servletContext.contextPath}/checkout">
