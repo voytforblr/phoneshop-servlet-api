@@ -1,8 +1,13 @@
 package com.es.phoneshop.web;
 
-import com.es.phoneshop.model.product.Product;
-import com.es.phoneshop.model.product.dao.ArrayListProductDao;
-import com.es.phoneshop.model.product.dao.ProductDao;
+import com.es.phoneshop.model.product.cart.Cart;
+import com.es.phoneshop.model.product.cart.CartService;
+import com.es.phoneshop.model.product.cart.DefaultCartService;
+import com.es.phoneshop.model.product.dao.ArrayListOrderDao;
+import com.es.phoneshop.model.product.dao.OrderDao;
+import com.es.phoneshop.model.product.order.DefaultOrderService;
+import com.es.phoneshop.model.product.order.Order;
+import com.es.phoneshop.model.product.order.OrderService;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -28,7 +33,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
-public class ProductListPageServletTest {
+public class CheckoutPageServletTest {
     @Mock
     private HttpServletRequest request;
     @Mock
@@ -39,43 +44,51 @@ public class ProductListPageServletTest {
     private ServletConfig config;
     @Mock
     private HttpSession session;
+    @Mock
+    private Cart cart;
     @Spy
-    private ProductListPageServlet servlet = new ProductListPageServlet();
+    private CheckoutPageServlet servlet = new CheckoutPageServlet();
+    @Spy
+    private OrderService orderService = DefaultOrderService.getInstance();
+    @Spy
+    private CartService cartService = DefaultCartService.getInstance();
+    @Spy
+    private Order order = new Order();
     private Locale locale = Locale.getDefault();
-    private ProductDao productDao = ArrayListProductDao.getInstance();
+    private OrderDao orderDao = ArrayListOrderDao.getInstance();
     private final Currency USD = Currency.getInstance("USD");
 
     @Before
     public void setup() throws ServletException {
         servlet.init(config);
-        Product product = new Product("test", "sms", new BigDecimal(100), USD, 100, "image");
-        productDao.save(product);
+
+        order.setTotalQuantity(1);
+        order.setTotalCost(BigDecimal.TEN);
+        order.setDeliveryCost(BigDecimal.TEN);
+        order.setSubtotal(BigDecimal.TEN);
+        orderDao.save(order);
         when(request.getRequestDispatcher(anyString())).thenReturn(requestDispatcher);
         when(request.getSession()).thenReturn(session);
-        when(request.getLocale()).thenReturn(locale);
+        when(request.getSession().getAttribute(any())).thenReturn(cart);
+        when(cart.getTotalCost()).thenReturn(BigDecimal.valueOf(10));
+        when(cart.getTotalQuantity()).thenReturn(1);
+        when(cartService.getCart(request)).thenReturn(cart);
+
+
     }
 
     @Test
     public void testDoGet() throws ServletException, IOException {
         servlet.doGet(request, response);
-
+        verify(request).setAttribute(eq("order"), any());
+        verify(request).setAttribute(eq("paymentMethods"), any());
         verify(requestDispatcher).forward(request, response);
-        verify(request).setAttribute(eq("products"), any());
-        verify(request).setAttribute(eq("history"), any());
     }
 
     @Test
     public void testDoPost() throws ServletException, IOException {
-        String[] quantityVal = {"eee", "5", "-1", "10000"};
-        String[] productIdVal = {"0", "1", "2", "3"};
-        when(request.getParameterValues("quantity")).thenReturn(quantityVal);
-        when(request.getParameterValues("productId")).thenReturn(productIdVal);
-        when(request.getParameter("id")).thenReturn("0").thenReturn("1").thenReturn("2")
-                .thenReturn("3");
-
         servlet.doPost(request, response);
-
-        verify(servlet).doGet(request, response);
+        verify(request).setAttribute(eq("errors"), any());
     }
 
 

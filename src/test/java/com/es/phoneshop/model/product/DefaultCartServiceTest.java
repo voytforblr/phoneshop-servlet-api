@@ -4,6 +4,8 @@ import com.es.phoneshop.model.product.cart.Cart;
 import com.es.phoneshop.model.product.cart.CartService;
 import com.es.phoneshop.model.product.cart.DefaultCartService;
 import com.es.phoneshop.model.product.cart.OutOfStockException;
+import com.es.phoneshop.model.product.dao.ArrayListProductDao;
+import com.es.phoneshop.model.product.dao.ProductDao;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -105,5 +107,25 @@ public class DefaultCartServiceTest {
         cartService.delete(cart, 0L);
 
         assertNotEquals(totalQuantityBeforeDelete, cart.getTotalQuantity());
+    }
+
+    @Test
+    public void testClear() throws OutOfStockException {
+        Product productWithStock100 = new Product("code", "sms", new BigDecimal(100), USD, 100, "image");
+        int totalQuantityAfterClear;
+        BigDecimal totalCostAfterClear;
+        int totalCartItemSize;
+
+        productDao.save(productWithStock100);
+        cartService.add(cart, 0L, 60);
+        cartService.clear(cart);
+        totalQuantityAfterClear = cart.getTotalQuantity();
+        totalCostAfterClear = cart.getTotalCost();
+        totalCartItemSize = cart.getItems().size();
+
+
+        assertEquals(0, totalQuantityAfterClear);
+        assertEquals(BigDecimal.ZERO, totalCostAfterClear);
+        assertEquals(0, totalCartItemSize);
     }
 }

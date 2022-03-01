@@ -1,5 +1,7 @@
 package com.es.phoneshop.model.product;
 
+import com.es.phoneshop.model.product.dao.ArrayListProductDao;
+import com.es.phoneshop.model.product.dao.ProductDao;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -102,8 +104,9 @@ public class ArrayListProductDaoTest {
         Product product = (new Product("test-product", "phone", new BigDecimal(100), USD, 100, "image"));
 
         productDao.save(product);
-        productDao.delete(product.getId());
-        productDao.getProduct(product.getId());
+        System.out.println(productDao.findProducts(null, null, null));
+        System.out.println(product.getId());
+        productDao.delete(10000L);
     }
 
     @Test

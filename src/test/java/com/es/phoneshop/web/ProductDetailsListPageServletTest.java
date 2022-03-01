@@ -1,18 +1,19 @@
 package com.es.phoneshop.web;
 
-import com.es.phoneshop.model.product.ArrayListProductDao;
 import com.es.phoneshop.model.product.Product;
-import com.es.phoneshop.model.product.ProductDao;
 import com.es.phoneshop.model.product.cart.Cart;
 import com.es.phoneshop.model.product.cart.CartService;
 import com.es.phoneshop.model.product.cart.DefaultCartService;
 import com.es.phoneshop.model.product.cart.OutOfStockException;
+import com.es.phoneshop.model.product.dao.ArrayListProductDao;
+import com.es.phoneshop.model.product.dao.ProductDao;
 import com.es.phoneshop.model.product.history.DefaultHistoryService;
 import com.es.phoneshop.model.product.history.HistoryService;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
+import org.mockito.Spy;
 import org.mockito.junit.MockitoJUnitRunner;
 
 import javax.servlet.RequestDispatcher;
@@ -24,6 +25,7 @@ import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.Currency;
+import java.util.Locale;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -43,20 +45,24 @@ public class ProductDetailsListPageServletTest {
     private ServletConfig config;
     @Mock
     private HttpSession session;
-
+    @Spy
     private ProductDetailsListPageServlet servlet = new ProductDetailsListPageServlet();
     private ProductDao productDao = ArrayListProductDao.getInstance();
     private CartService cartService = DefaultCartService.getInstance();
     private HistoryService historyService = DefaultHistoryService.getInstance();
+    private Locale locale = Locale.getDefault();
 
     @Before
     public void setup() throws ServletException, OutOfStockException {
-        productDao.save(new Product("test-product", "Samsung Galaxy S", new BigDecimal(100), Currency.getInstance("USD"), 100, "image"));
         servlet.init(config);
+        productDao.save(new Product("test-product", "Samsung Galaxy S", new BigDecimal(100), Currency.getInstance("USD"), 100, "image"));
         Cart cart = new Cart();
         cartService.add(cart, 0L, 10);
         when(request.getSession()).thenReturn(session);
+        when(request.getLocale()).thenReturn(locale);
         when(request.getRequestDispatcher(anyString())).thenReturn(requestDispatcher);
+        when(request.getContextPath()).thenReturn("/phoneshop-servlet-api");
+
     }
 
     @Test

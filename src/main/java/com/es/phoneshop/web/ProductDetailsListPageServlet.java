@@ -1,11 +1,11 @@
 package com.es.phoneshop.web;
 
-import com.es.phoneshop.model.product.ArrayListProductDao;
-import com.es.phoneshop.model.product.ProductDao;
 import com.es.phoneshop.model.product.cart.Cart;
 import com.es.phoneshop.model.product.cart.CartService;
 import com.es.phoneshop.model.product.cart.DefaultCartService;
 import com.es.phoneshop.model.product.cart.OutOfStockException;
+import com.es.phoneshop.model.product.dao.ArrayListProductDao;
+import com.es.phoneshop.model.product.dao.ProductDao;
 import com.es.phoneshop.model.product.history.DefaultHistoryService;
 import com.es.phoneshop.model.product.history.History;
 import com.es.phoneshop.model.product.history.HistoryService;

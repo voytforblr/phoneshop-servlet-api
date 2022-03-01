@@ -1,5 +1,7 @@
 package com.es.phoneshop.model.product;
 
+import com.es.phoneshop.model.product.dao.ArrayListProductDao;
+import com.es.phoneshop.model.product.dao.ProductDao;
 import com.es.phoneshop.model.product.history.DefaultHistoryService;
 import com.es.phoneshop.model.product.history.History;
 import com.es.phoneshop.model.product.history.HistoryService;
