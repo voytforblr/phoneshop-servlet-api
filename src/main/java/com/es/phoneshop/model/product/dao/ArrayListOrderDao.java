@@ -20,9 +20,6 @@ public class ArrayListOrderDao extends AbstractDao<Order> implements OrderDao {
         return SingletonHolder.HOLDER_INSTANCE;
     }
 
-    //здесь не удалось сильно уменьшить повтор кода, так как для save требуется сохранение в 2 списка
-    //и выходит так, что необходимо делать lock на оба сохранения
-
     @Override
     public Order getOrder(Long id) {
         try {
