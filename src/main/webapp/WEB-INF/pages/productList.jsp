@@ -8,6 +8,7 @@
     <p>
         Welcome to Expert-Soft training!
     </p>
+    <a href="${pageContext.servletContext.contextPath}/products/advancedSearch">Advanced search</a>
     <form>
         <input name="query" value="${param.query}">
         <button>Search</button>

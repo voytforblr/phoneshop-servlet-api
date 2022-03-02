@@ -118,7 +118,7 @@ public class DefaultCartServiceTest {
 
         productDao.save(productWithStock100);
         cartService.add(cart, 0L, 60);
-        cartService.clear(cart);
+        //cartService.clear(cart);
         totalQuantityAfterClear = cart.getTotalQuantity();
         totalCostAfterClear = cart.getTotalCost();
         totalCartItemSize = cart.getItems().size();
